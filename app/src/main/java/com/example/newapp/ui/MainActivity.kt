@@ -2,41 +2,56 @@ package com.example.newapp.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.newapp.HolidayApplication
 import com.example.newapp.R
-import com.example.newapp.remote.HolidayRetrofitImpl
+import com.example.newapp.data.remote.HolidayRetrofitImpl
 import com.example.newapp.repository.MainRepository
 import com.example.newapp.viewmodel.MainViewModel
-import com.example.newapp.viewmodel.RecyclerViewAdapter
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var recyclerViewAdapter: RecyclerViewAdapter
+    private lateinit var adapter: PublicHolidaysAdapter
     private lateinit var mainViewModel: MainViewModel
+    private lateinit var recyclerView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        //TODO Add the adapter to the main activity, create it right before the ViewModel
-        recyclerViewAdapter = RecyclerViewAdapter()
         mainViewModel =
             MainViewModel(
                 mainRepository = MainRepository(
-                    retrofitImpl = HolidayRetrofitImpl
+                    retrofitImpl = HolidayRetrofitImpl,
+                    holidaysDao = (applicationContext as HolidayApplication).database.publicHolidaysDao()
                 )
             )
 
-        //TODO call the adapter update method with the holidays to pass
-        mainViewModel.publicHoliday.observe(this) {
-            println("Hello: view data is here! $it")
+        adapter = PublicHolidaysAdapter(
+            allHolidays = emptyList(),
+            mainViewModel = mainViewModel,
+            lifecycleOwner = this
+        )
+        recyclerView = findViewById(R.id.rvHolidays)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = adapter
+        mainViewModel.publicHolidays.observe(this) { publicHolidays ->
+            println("Hello: view data is here! $publicHolidays")
+            adapter.updateItems(holidays = publicHolidays)
         }
 
-        getHolidays()
+        getPublicHolidays()
+        getPrivateHolidays()
     }
 
     //only has visibility to ViewModel
-    private fun getHolidays() {
+    private fun getPublicHolidays() {
         println("Hello from MainActivity")
-        mainViewModel.getHolidays()
+        mainViewModel.getPublicHolidays()
     }
 
+    private fun getPrivateHolidays() {
+        println("Hello from MainActivity")
+        mainViewModel.getPrivateHolidays()
+    }
 }

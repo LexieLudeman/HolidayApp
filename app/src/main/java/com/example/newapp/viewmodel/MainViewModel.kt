@@ -13,13 +13,24 @@ class MainViewModel (
 ): ViewModel(){
 
     private val _publicHolidays: MutableLiveData<List<PublicHoliday>> = MutableLiveData()
-    val publicHoliday : LiveData<List<PublicHoliday>> = _publicHolidays
+    val publicHolidays : LiveData<List<PublicHoliday>> = _publicHolidays
 
-    fun getHolidays() {
+    private val _privateHolidays: MutableLiveData<List<PublicHoliday>> = MutableLiveData()
+    val privateHolidays: LiveData<List<PublicHoliday>> = _privateHolidays
+
+    fun getPublicHolidays() {
         println("Hello from MainViewModel")
         viewModelScope.launch {
-            val publicHolidays = mainRepository.getHolidays()
+            val publicHolidays = mainRepository.getPublicHolidays()
             _publicHolidays.value = publicHolidays
         }
     }
+
+    fun getPrivateHolidays() {
+        viewModelScope.launch {
+            val privateHolidays = mainRepository.getPrivateHolidays()
+            _privateHolidays.value = privateHolidays
+        }
+    }
+
 }
