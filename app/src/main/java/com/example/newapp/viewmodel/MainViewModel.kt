@@ -19,7 +19,6 @@ class MainViewModel (
         println("Hello from MainViewModel")
         viewModelScope.launch {
             val publicHolidays = mainRepository.getHolidays()
-            //todo set this to livedata for views to observe
             _publicHolidays.value = publicHolidays
         }
     }

@@ -21,6 +21,10 @@ class RecyclerViewAdapter(private val list: List<PublicHoliday>)
 
     override fun getItemCount(): Int = list.size
 
+    fun updateItems(holidays: List<PublicHoliday>) {
+        //TODO Public method inside adapter to update the items.
+    }
+
 }
 
 class PublicHolidayViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
